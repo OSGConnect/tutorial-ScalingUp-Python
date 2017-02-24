@@ -21,7 +21,7 @@ simple python example. Once we understand the basic HTCondor script, it is easy
 to scale up.
 
     $ tutorial ScalingUp-python
-    $ cd tutorial-ScalingUp-python/Example1
+    $ cd tutorial-ScalingUp-python
 
 As we discussed in the previous section on HTCondor scripts, we need to
 prepare the job execution and the job submission scripts. 
@@ -58,7 +58,10 @@ For example, the following arguments mean the boundary of x1 direction is (-3, 3
 
     python rosen_brock_brute_opt.py  -3 3 -2 2
 
+The directory `Example1` runs the python script with the default random values. The directories `Example2`, `Example3` and `Example4` deal with supplying the boundary values as input arguments. 
+
 ##Execution Script 
+
 
 Let us take a look at the execution script, `scalingup-python-wrapper.sh`
 
@@ -69,16 +72,18 @@ Let us take a look at the execution script, `scalingup-python-wrapper.sh`
 
     python ./rosen_brock_brute_opt.py  $1 $2 $3 $4
 
-
 The wrapper loads the the relevant modules and then executes the python script `rosen_brock_brute_opt.py`. The python script takes four argument but they are optional. If we don't supply these optional
 arguments, the values are internally assigned.
 
-
 ## Submitting jobs concurrently
 
+Now let us take a look at job description file 
+
+    cd Example1
+    cat ScalingUp-PythonCals.submit
+
 If we want to submit several jobs, we need to track log, out and error  files for each
-job. An easy way to do this is to add the `$(Cluster)` and `$(Process)`
-macros to the HTCondor submit file. 
+job. An easy way to do this is to add the `$(Cluster)` and `$(Process)` variables to the file names. 
 
     # The UNIVERSE defines an execution environment. You will almost always use VANILLA.
     Universe = vanilla
@@ -131,12 +136,64 @@ Let us submit the above job
     Submitting job(s)..........
     10 job(s) submitted to cluster 329837.
 
-Apply your `condor_q` and `connect watch` knowledge to see this job
-progress. After all jobs finished, execute the `post_script.sh  script to sort the results. 
+Apply your `condor_q` and `connect watch` knowledge to see this job progress. After all 
+jobs finished, execute the `post_script.sh  script to sort the results. 
 
     ./post_script.sh
 
+## Other ways to use Queue command
 
+Now we will explore the ways to use Queue command. In the previous example, we utilized the random boundary conditions. The random boundary conditions are not efficient. If we have some intution about what are better choices for the boundary conditions, it is better to supply them as arguments. 
+
+It is possible to use a single file to supply multiple arguments. We can take the job description 
+file from the previous example, and modify it slightly to submit several jobs.  The modified job 
+description file is available in `Example2` directory. 
+
+    cd Example2
+    
+Take a look at the job description file `ScalingUp-PythonCals.submit`.  
+    
+    ...
+    #Supply arguments 
+    arguments = -9 9 -9 9
+
+    # Queue is the "start button" - it launches any jobs that have been
+    # specified thus far.
+    queue 
+
+    arguments = -8 8 -8 8
+    queue 
+
+    arguments = -8 8 -8 8
+    queue 
+    ...
+
+A major part of the job description file looks same as the previous example. The main 
+difference is the arguments and how we supply them.  Each time the queue command appears 
+in the script, the expression before the queue would replace or add to the job description that 
+appears on the top of the file. 
+
+We may get tired of typing the argument and queue expressions again and again in the above 
+job description file. There is a way to implement compact queue expression that expands the 
+arguments for each job. Take a look at the job description file in Example3. 
+
+    cat Example3/ScalingUp-PythonCals.submit
+    ...
+    queue arguments from (
+    -9 9 -9 9 
+    -8 8 -8 8 
+    -7 7 -7 7 
+    -6 6 -6 6 
+    -5 5 -5 5 
+    -4 4 -4 4 
+    -3 3 -3 3 
+    -2 2 -2 2 
+    -1 1 -1 1 
+    )
+    ...
+
+In fact, we could assign values to variables and then assign them to HTCondor's expression. 
+In `Example4` directory... 
 
 
 ## Key Points

@@ -35,7 +35,17 @@ on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 
 PeriodicRelease = ( (CurrentTime - EnteredCurrentStatus) > $RANDOM_INTEGER(60, 600, 120) ) && ((NumJobStarts < 5))
 
-# Queue is the "start button" - it launches any jobs that have been
-# specified thus far.
-queue 10
+# Queue command  
+queue arguments from (
+    -9 9 -9 9 
+    -8 8 -8 8 
+    -7 7 -7 7 
+    -6 6 -6 6 
+    -5 5 -5 5 
+    -4 4 -4 4 
+    -3 3 -3 3 
+    -2 2 -2 2 
+    -1 1 -1 1 
+  )
+
 
