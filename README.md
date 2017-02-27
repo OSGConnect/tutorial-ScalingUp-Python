@@ -2,7 +2,7 @@
 [TOC]
 
 
-## Overview
+<h2> Overview </h2>
 
 
 Many large scale computations require the ability to process multiple jobs concurrently.  Consider the extensive
@@ -27,7 +27,7 @@ to scale up.
 As we discussed in the previous section on HTCondor scripts, we need to
 prepare the job execution and the job submission scripts. 
 
-## Python script and the optimization function
+<h2> Python script and the optimization function </h2>
 
 Let us take a look at our objective function that we are trying to optimize.
 
