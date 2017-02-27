@@ -182,7 +182,7 @@ jobs finished, execute the `post_script.sh  script to sort the results.
 
 <h3> Variable expansion via Queue command </h3>
 
-![fig 1](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide09.png)
+![fig 1](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide10.png)
 
 A major part of the job description file looks same as the previous example. The main 
 difference is that the addition of  `arguments` keyword.  Each time the queue command appears 
