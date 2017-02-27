@@ -2,32 +2,30 @@
 [TOC]
 
 
-## Overview
+<h2> Overview </h2>
 
 
-Many large scale computations require the ability to process multiple jobs concurrently.  Consider the extensive
-sampling for a multi-dimensional Monte Carlo integration or molecular
-dynamics simulation with several initial conditions. These type of calculations require 
+Many large scale computations require the ability to process multiple jobs concurrently. Consider the extensive
+sampling done for a multi-dimensional Monte Carlo integration, parameter sweep for a given model or molecular
+dynamics simulation with several initial conditions. These calculations require 
 submitting many jobs. About a million CPU hours per day are available to OSG users
-on an opportunistic basis.  Learning how to scale up and control large
-numbers of jobs is essential to realizing the full potential of distributed high
+on an opportunistic basis. Learning how to scale up and control large
+numbers of jobs is essential to realize the full potential of distributed high
 throughput computing on the OSG.
 
-The `Queue` command in HTCondor can handle running multiple jobs from  a single job description file. In this tutorial, we will see how to scale up the calculations for a 
-simple python example using the HTCondor’s Queue command
+The  HTCondor's `Queue` command can run multiple jobs from a single job description file. In this tutorial, we will see how to scale up the calculations for a simple python example using the HTCondor’s Queue command.
 
-
-Once we understand the basic HTCondor script, it is easy
+Once we understand the basic HTCondor script to run a single job, it is easy
 to scale up.
+
+Obtain the example files via the `tutorial` command,
 
     $ tutorial ScalingUp-python
     $ cd tutorial-ScalingUp-python
 
+Inside the `tutorial-ScalingUp-python` directory, all the required files are available. This includes the sample python program, job description file and executable files.  
 
-As we discussed in the previous section on HTCondor scripts, we need to
-prepare the job execution and the job submission scripts. 
-
-## Python script and the optimization function
+<h2> Python script and the optimization function </h2>
 
 Let us take a look at our objective function that we are trying to optimize.
 
@@ -38,29 +36,28 @@ function is one of the test function used to test the robustness of an optimizat
 
 ![fig 1](https://raw.githubusercontent.com/OSGConnect/tutorial-matlab-SimulatedAnnealing/master/Figs/RosenBrockFunction.png)
 
-Here, we are going to use the brute force optimization approach to evaluate the two dimensional 
-Rosenbrock function on grids of points. The boundary values for the grid points are 
-randomly assigned inside the python script. However, these default values may be replaced by 
+Here, we are going to use the brute force optimization approach to evaluate the two dimensional Rosenbrock function on grids of points. The boundary values for the grid points are randomly assigned inside the python script. However, these default values may be replaced by 
 user supplied values.
 
-For random assigned boundary values, the script is executed without any argument
+To run the calculations with the random boundary values, the script is executed without any argument
 
     python rosen_brock_brute_opt.py
-
-The boundary values are supplied as input argument to the python script
+    
+To run the calculations with the user supplid values, the script is executed with input arguments
 
     python rosen_brock_brute_opt.py x_low x_high y_low y_high
 
 where x_low and x_high are low and high values along x direction, and y_low and y_high are the low and high values along the y direction.
 
-For example, the following arguments mean the boundary of x direction is (-3, 3) and the boundary of y direction is (-2, 3).
+For example, the boundary of x direction is (-3, 3) and the boundary of y direction is (-2, 3).
 
     python rosen_brock_brute_opt.py  -3 3 -2 2
+    
+sets the boundary of x direction to (-3, 3) and the boundary of y direction to (-2, 3).
 
 The directory `Example1` runs the python script with the default random values. The directories `Example2`, `Example3` and `Example4` deal with supplying the boundary values as input arguments. 
 
-##Execution Script 
-
+<h2>Execution Script </h2>
 
 Let us take a look at the execution script, `scalingup-python-wrapper.sh`
 
@@ -71,18 +68,16 @@ Let us take a look at the execution script, `scalingup-python-wrapper.sh`
 
     python ./rosen_brock_brute_opt.py  $1 $2 $3 $4
 
-The wrapper loads the the relevant modules and then executes the python script `rosen_brock_brute_opt.py`. The python script takes four argument but they are optional. If we don't supply these optional
-arguments, the values are internally assigned.
+The wrapper loads the the relevant modules and then executes the python script `rosen_brock_brute_opt.py`. The python script takes four argument but they are optional. If we don't supply these optional arguments, the values are internally assigned.
 
-## Submitting jobs concurrently
+<h2> Submitting jobs concurrently </h2>
 
 Now let us take a look at job description file 
 
     cd Example1
     cat ScalingUp-PythonCals.submit
 
-If we want to submit several jobs, we need to track log, out and error  files for each
-job. An easy way to do this is to add the `$(Cluster)` and `$(Process)` variables to the file names. 
+If we want to submit several jobs, we need to track log, out and error  files for each job. An easy way to do this is to add the `$(Cluster)` and `$(Process)` variables to the file names. 
 
     # The UNIVERSE defines an execution environment. You will almost always use VANILLA.
     Universe = vanilla
@@ -120,7 +115,7 @@ job. An easy way to do this is to add the `$(Cluster)` and `$(Process)` variable
     # the same time causes stress for the login node, so the random spread is a 
     # good approach to periodically release the failed jobs. 
 
-    PeriodicRelease = ( (CurrentTime - EnteredCurrentStatus) > $RANDOM_INTEGER(60, 7200, 120) ) && ((NumJobStarts < 5))
+    PeriodicRelease = ( (CurrentTime - EnteredCurrentStatus) > $RANDOM_INTEGER(60, 600, 120) ) && ((NumJobStarts < 5))
 
     # Queue is the "start button" - it launches any jobs that have been
     # specified thus far.
@@ -139,7 +134,7 @@ jobs finished, execute the `post_script.sh  script to sort the results.
 
     ./post_script.sh
 
-## Other ways to use Queue command
+<h2> Other ways to use Queue command </h2>
 
 Now we will explore other ways to use Queue command. In the previous example, we did not pass 
 any argument to the program and the program generated random boundary conditions.  If we have some guess about what could be a better boundary condition, it is a good idea to supply the boundary 
@@ -252,12 +247,12 @@ jobs finished, execute the `post_script.sh  script to sort the results.
     ./post_script.sh
 
 
-## Key Points
+<h2> Key Points </h2>
 - [x] Scaling up the computational resources on OSG is crucial to taking full advantage of grid computing.
 - [x] Changing the value of `Queue` allows the user to scale up the resources.
 - [x] `Arguments` allows you to pass parameters to a job script.
 - [x] `$(Cluster)` and `$(Process)` can be used to name log files uniquely.
 - [x]  Check the HTCondor manual to learn more about the `Queue` command (https://research.cs.wisc.edu/htcondor/manual/latest/2_5Submitting_Job.html).
 
-## Getting Help
+<h2> Getting Help </h2>
 For assistance or questions, please email the OSG User Support team  at <mailto:user-support@opensciencegrid.org> or visit the [help desk and community forums](http://support.opensciencegrid.org).
