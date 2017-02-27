@@ -59,7 +59,7 @@ For example, the following arguments mean the boundary of x direction is (-3, 3)
 
 The directory `Example1` runs the python script with the default random values. The directories `Example2`, `Example3` and `Example4` deal with supplying the boundary values as input arguments. 
 
-##Execution Script 
+<h2>Execution Script </h2>
 
 
 Let us take a look at the execution script, `scalingup-python-wrapper.sh`
@@ -74,7 +74,7 @@ Let us take a look at the execution script, `scalingup-python-wrapper.sh`
 The wrapper loads the the relevant modules and then executes the python script `rosen_brock_brute_opt.py`. The python script takes four argument but they are optional. If we don't supply these optional
 arguments, the values are internally assigned.
 
-## Submitting jobs concurrently
+<h2> Submitting jobs concurrently </h2>
 
 Now let us take a look at job description file 
 
@@ -139,7 +139,7 @@ jobs finished, execute the `post_script.sh  script to sort the results.
 
     ./post_script.sh
 
-## Other ways to use Queue command
+<h2> Other ways to use Queue command </h2>
 
 Now we will explore other ways to use Queue command. In the previous example, we did not pass 
 any argument to the program and the program generated random boundary conditions.  If we have some guess about what could be a better boundary condition, it is a good idea to supply the boundary 
@@ -252,12 +252,12 @@ jobs finished, execute the `post_script.sh  script to sort the results.
     ./post_script.sh
 
 
-## Key Points
+<h2> Key Points </h2>
 - [x] Scaling up the computational resources on OSG is crucial to taking full advantage of grid computing.
 - [x] Changing the value of `Queue` allows the user to scale up the resources.
 - [x] `Arguments` allows you to pass parameters to a job script.
 - [x] `$(Cluster)` and `$(Process)` can be used to name log files uniquely.
 - [x]  Check the HTCondor manual to learn more about the `Queue` command (https://research.cs.wisc.edu/htcondor/manual/latest/2_5Submitting_Job.html).
 
-## Getting Help
+<h2> Getting Help </h2>
 For assistance or questions, please email the OSG User Support team  at <mailto:user-support@opensciencegrid.org> or visit the [help desk and community forums](http://support.opensciencegrid.org).
