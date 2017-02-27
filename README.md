@@ -31,9 +31,7 @@ prepare the job execution and the job submission scripts.
 
 Let us take a look at our objective function that we are trying to optimize.
 
-    def rosenbrock(x):   # The rosenbrock function
-        f = 100.0*(1 - x[0])**2 + (x[1] - x[0]**2)**2
-        return f
+        f = (1 - x)**2 + (y - x**2)**2
 
 This a two dimensional Rosenbrock function. Clearly, the minimum is located at (1,1). Rosenbrock
 function is one of the test function used to test the robustness of an optimization method.
