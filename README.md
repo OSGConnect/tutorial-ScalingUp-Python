@@ -1,27 +1,28 @@
-[title]: - "Scaling up compute resources - Python Example"
+[title]: - “Large Scale Computation with HTCondor’s Queue Command”
 [TOC]
 
 
 ## Overview
 
-Scaling up the computational resources is a big advantage for doing
-certain large scale calculations on the OSG. Consider the extensive
-sampling for a multi-dimensional Monte Carlo integration or molecular
-dynamics simulation with several initial conditions. These type of
-calculations require submitting lot of jobs.
 
-In the previous example, we submitted the job to a single worker
-machine. About a million CPU hours per day are available to OSG users
+Many large scale computations require the ability to process multiple jobs concurrently.  Consider the extensive
+sampling for a multi-dimensional Monte Carlo integration or molecular
+dynamics simulation with several initial conditions. These type of calculations require 
+submitting many jobs. About a million CPU hours per day are available to OSG users
 on an opportunistic basis.  Learning how to scale up and control large
-numbers of jobs to realizing the full potential of distributed high
+numbers of jobs is essential to realizing the full potential of distributed high
 throughput computing on the OSG.
 
-In this section, we will see how to scale up the calculations with
-simple python example. Once we understand the basic HTCondor script, it is easy
+The `Queue` command in HTCondor can handle running multiple jobs from  a single job description file. In this tutorial, we will see how to scale up the calculations for a 
+simple python example using the HTCondor’s Queue command
+
+
+Once we understand the basic HTCondor script, it is easy
 to scale up.
 
     $ tutorial ScalingUp-python
     $ cd tutorial-ScalingUp-python
+
 
 As we discussed in the previous section on HTCondor scripts, we need to
 prepare the job execution and the job submission scripts. 
@@ -50,11 +51,11 @@ For random assigned boundary values, the script is executed without any argument
 
 The boundary values are supplied as input argument to the python script
 
-    python rosen_brock_brute_opt.py x1_low x1_high x2_low x2_high
+    python rosen_brock_brute_opt.py x_low x_high y_low y_high
 
-where x1_low and x1_high are low and high values along x1 direction, and x2_low and x2_high are the low and high values along the x2 direction.
+where x_low and x_high are low and high values along x direction, and y_low and y_high are the low and high values along the y direction.
 
-For example, the following arguments mean the boundary of x1 direction is (-3, 3) and the boundary of x2 direction is (-2, 3).
+For example, the following arguments mean the boundary of x direction is (-3, 3) and the boundary of y direction is (-2, 3).
 
     python rosen_brock_brute_opt.py  -3 3 -2 2
 
@@ -89,7 +90,7 @@ job. An easy way to do this is to add the `$(Cluster)` and `$(Process)` variable
     Universe = vanilla
 
     # These are good base requirements for your jobs on the OSG. It is specific on OS and
-    # OS version, core cound and memory, and wants to use the software modules. 
+    # OS version, core, and memory, and wants to use the software modules. 
     Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True 
     request_cpus = 1
     request_memory = 1 GB
@@ -127,8 +128,7 @@ job. An easy way to do this is to add the `$(Cluster)` and `$(Process)` variable
     # specified thus far.
     queue 10
 
-Note the `Queue 10`.  This tells Condor to enqueue 100 copies of this job
-as one cluster.  
+Note the `Queue 10`.  This tells Condor to queue 10 copies of this job as one cluster.  
 
 Let us submit the above job
 
@@ -143,15 +143,16 @@ jobs finished, execute the `post_script.sh  script to sort the results.
 
 ## Other ways to use Queue command
 
-Now we will explore the ways to use Queue command. In the previous example, we utilized the random boundary conditions. The random boundary conditions are not efficient. If we have some intution about what are better choices for the boundary conditions, it is better to supply them as arguments. 
+Now we will explore other ways to use Queue command. In the previous example, we did not pass 
+any argument to the program and the program generated random boundary conditions.  If we have some guess about what could be a better boundary condition, it is a good idea to supply the boundary 
+condition as arguments. 
 
 It is possible to use a single file to supply multiple arguments. We can take the job description 
 file from the previous example, and modify it slightly to submit several jobs.  The modified job 
-description file is available in `Example2` directory. 
+description file is available in `Example2` directory.  Take a look at the job description file `ScalingUp-PythonCals.submit`.  
 
-    cd Example2
-    
-Take a look at the job description file `ScalingUp-PythonCals.submit`.  
+    $ cd Example2
+    $ cat  ScalingUp-PythonCals.submit
     
     ...
     #Supply arguments 
@@ -168,16 +169,28 @@ Take a look at the job description file `ScalingUp-PythonCals.submit`.
     queue 
     ...
 
+Let us submit the above job
+
+    $ condor_submit ScalingUp-PythonCals.submit
+    Submitting job(s)..........
+    10 job(s) submitted to cluster 329838.
+
+Apply your `condor_q` and `connect watch` knowledge to see this job progress. After all 
+jobs finished, execute the `post_script.sh  script to sort the results. 
+
+    ./post_script.sh
+
+
 A major part of the job description file looks same as the previous example. The main 
-difference is the arguments and how we supply them.  Each time the queue command appears 
-in the script, the expression before the queue would replace or add to the job description that 
-appears on the top of the file. 
+difference is that the addition of  `arguments` keyword.  Each time the queue command appears 
+in the script, the expression(s) before the queue would be added to the job description. 
+
 
 We may get tired of typing the argument and queue expressions again and again in the above 
-job description file. There is a way to implement compact queue expression that expands the 
+job description file. There is a way to implement compact queue expression and  expand the 
 arguments for each job. Take a look at the job description file in Example3. 
 
-    cat Example3/ScalingUp-PythonCals.submit
+    $ cat Example3/ScalingUp-PythonCals.submit
     ...
     queue arguments from (
     -9 9 -9 9 
@@ -192,8 +205,53 @@ arguments for each job. Take a look at the job description file in Example3.
     )
     ...
 
-In fact, we could assign values to variables and then assign them to HTCondor's expression. 
-In `Example4` directory... 
+Let us submit the above job
+
+    $ condor_submit ScalingUp-PythonCals.submit
+    Submitting job(s)..........
+    10 job(s) submitted to cluster 329839.
+
+Apply your `condor_q` and `connect watch` knowledge to see this job progress. After all 
+jobs finished, execute the `post_script.sh  script to sort the results. 
+
+    ./post_script.sh
+
+
+In fact, we could define variables and assign them to HTCondor's expression. This is
+illustrated in Example4. 
+
+    $ cd Example4
+    $ cat ScalingUp-PythonCals.submit
+
+    ...
+    arguments = $(x_low) $(x_high) $(y_low) $(y_high)
+
+    # Queue command  
+    queue x_low, x_high, y_low, y_high from (
+    -9 9 -9 9 
+    -8 8 -8 8 
+    -7 7 -7 7 
+    -6 6 -6 6 
+    -5 5 -5 5 
+    -4 4 -4 4 
+    -3 3 -3 3 
+    -2 2 -2 2 
+    -1 1 -1 1 
+   )
+
+The  queue command defines the variables x_low, x_high, y_low, and y_hight.  These variables are passed on to the 
+argument command (`arguments = $(x_low) $(x_high) $(y_low) $(y_high)`). 
+ 
+Let us submit the above job
+
+    $ condor_submit ScalingUp-PythonCals.submit
+    Submitting job(s)..........
+    10 job(s) submitted to cluster 329840.
+
+Apply your `condor_q` and `connect watch` knowledge to see this job progress. After all 
+jobs finished, execute the `post_script.sh  script to sort the results. 
+
+    ./post_script.sh
 
 
 ## Key Points
@@ -201,7 +259,7 @@ In `Example4` directory...
 - [x] Changing the value of `Queue` allows the user to scale up the resources.
 - [x] `Arguments` allows you to pass parameters to a job script.
 - [x] `$(Cluster)` and `$(Process)` can be used to name log files uniquely.
-- [x] `connect histogram` gives a nice plot of resource assignments.
+- [x]  Check the HTCondor manual to learn more about the `Queue` command (https://research.cs.wisc.edu/htcondor/manual/latest/2_5Submitting_Job.html).
 
 ## Getting Help
 For assistance or questions, please email the OSG User Support team  at <mailto:user-support@opensciencegrid.org> or visit the [help desk and community forums](http://support.opensciencegrid.org).

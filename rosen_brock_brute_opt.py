@@ -7,18 +7,25 @@ import numpy
 from scipy import optimize
 from random import uniform
 
-def rosenbrock(x):   # The rosenbrock function
-    f = 100.0*(1 - x[0])**2 + (x[1] - x[0]**2)**2
+def rosenbrock(coordinates):   # The rosenbrock function
+    x = coordinates[0]
+    y = coordinates[1] 
+    f = (1 - x)**2 + 100.0*(y - x**2)**2
     return f
 
 if __name__ == "__main__":
-    #rranges = ((-1, 2), (-1, 2))
-    #arg_option = get_args() 
-    bound_array = [uniform(-10, 10), uniform(-10, 10), uniform(-10, 10), uniform(-10, 10)]
+#  assign defualt values from uniform random numbers
+    x_low = uniform(-10,0)
+    x_high = uniform(0,10)
+    y_low = uniform(-10,0)
+    y_high = uniform(0,10)
+    bound_array = [x_low, x_high, y_low, y_high]
     for i in range(1,len(sys.argv)):
         if i < 5:
+#  Replace the random values with the supplied values 
             bound_array[i-1] = float(sys.argv[i])
-    
+   
+# The range for brute function requires in tuples  
     brute_range = ((bound_array[0],bound_array[1]), (bound_array[2], bound_array[3]))
     #print('Search Boundary  x1= {0:3.3f} x2= {1:3.3f} x3= {2:3.3f} x4= {3:3.3f}'.format(*bound_array))
     
