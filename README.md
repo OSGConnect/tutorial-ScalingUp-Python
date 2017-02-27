@@ -72,6 +72,8 @@ The wrapper loads the the relevant modules and then executes the python script `
 
 <h2> Submitting jobs concurrently </h2>
 
+![fig 1](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide08.png)
+
 Now let us take a look at job description file 
 
     cd Example1
@@ -140,6 +142,10 @@ Now we will explore other ways to use Queue command. In the previous example, we
 any argument to the program and the program generated random boundary conditions.  If we have some guess about what could be a better boundary condition, it is a good idea to supply the boundary 
 condition as arguments. 
 
+<h3> Supply multiple arguments via  Queue command </h3>
+
+![fig 1](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide09.png)
+
 It is possible to use a single file to supply multiple arguments. We can take the job description 
 file from the previous example, and modify it slightly to submit several jobs.  The modified job 
 description file is available in `Example2` directory.  Take a look at the job description file `ScalingUp-PythonCals.submit`.  
@@ -173,6 +179,10 @@ jobs finished, execute the `post_script.sh  script to sort the results.
 
     ./post_script.sh
 
+
+<h3> Variable expansion via Queue command </h3>
+
+![fig 1](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide09.png)
 
 A major part of the job description file looks same as the previous example. The main 
 difference is that the addition of  `arguments` keyword.  Each time the queue command appears 
