@@ -13,6 +13,8 @@ on an opportunistic basis. Learning how to scale up and control large
 numbers of jobs is essential to realize the full potential of distributed high
 throughput computing on the OSG.
 
+![fig 1](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide1.png)
+
 The  HTCondor's `Queue` command can run multiple jobs from a single job description file. In this tutorial, we will see how to scale up the calculations for a simple python example using the HTCondor’s Queue command.
 
 Once we understand the basic HTCondor script to run a single job, it is easy
@@ -34,7 +36,7 @@ Let us take a look at our objective function that we are trying to optimize.
 This a two dimensional Rosenbrock function. Clearly, the minimum is located at (1,1). Rosenbrock
 function is one of the test function used to test the robustness of an optimization method.
 
-![fig 1](https://raw.githubusercontent.com/OSGConnect/tutorial-matlab-SimulatedAnnealing/master/Figs/RosenBrockFunction.png)
+![fig 2](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/RosenBrockFunction.png)
 
 Here, we are going to use the brute force optimization approach to evaluate the two dimensional Rosenbrock function on grids of points. The boundary values for the grid points are randomly assigned inside the python script. However, these default values may be replaced by 
 user supplied values.
@@ -72,7 +74,7 @@ The wrapper loads the the relevant modules and then executes the python script `
 
 <h2> Submitting jobs concurrently </h2>
 
-![fig 1](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide08.png)
+![fig 3](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide2.png)
 
 Now let us take a look at job description file 
 
@@ -144,7 +146,7 @@ condition as arguments.
 
 <h3> Supply multiple arguments via  Queue command </h3>
 
-![fig 1](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide09.png)
+![fig 4](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide3.png)
 
 It is possible to use a single file to supply multiple arguments. We can take the job description 
 file from the previous example, and modify it slightly to submit several jobs.  The modified job 
@@ -182,7 +184,7 @@ jobs finished, execute the `post_script.sh  script to sort the results.
 
 <h3> Variable expansion via Queue command </h3>
 
-![fig 1](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide10.png)
+![fig 5](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide4.png)
 
 A major part of the job description file looks same as the previous example. The main 
 difference is that the addition of  `arguments` keyword.  Each time the queue command appears 
