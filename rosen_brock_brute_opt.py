@@ -27,7 +27,7 @@ if __name__ == "__main__":
    
 # The range for brute function requires in tuples  
     brute_range = ((bound_array[0],bound_array[1]), (bound_array[2], bound_array[3]))
-    #print('Search Boundary  x1= {0:3.3f} x2= {1:3.3f} x3= {2:3.3f} x4= {3:3.3f}'.format(*bound_array))
+    print('Search Boundary  x1= {0:3.3f} x2= {1:3.3f} x3= {2:3.3f} x4= {3:3.3f}'.format(*bound_array))
     
 # Here we are doing a brute force optimization. The function is evaluated in grids of points. 
 # brute_range is a tuple and defines the boundary for the grid points
@@ -35,6 +35,6 @@ if __name__ == "__main__":
     result_from_brute = optimize.brute(rosenbrock, brute_range, full_output=True, finish=None)
     function_min = result_from_brute[1]
     coordinate_of_min = result_from_brute[0]
-    print ('Initial Coordinates= ',brute_range)
+    #print ('Initial Coordinates= ',brute_range)
     print ('Search Result= ',function_min, coordinate_of_min)
 
