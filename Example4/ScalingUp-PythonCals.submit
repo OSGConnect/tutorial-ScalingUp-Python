@@ -21,7 +21,7 @@ log = Log/job.log.$(Cluster).$(Process)
 #  happen to fail, in case their execute server was just missing some 
 #  dependencies of our python program: 
 on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
-PeriodicRelease = ( (CurrentTime - EnteredCurrentStatus) > 600 ) && (NumJobStarts < 5)
+PeriodicRelease = ( (CurrentTime - EnteredCurrentStatus) > 120 ) && (NumJobStarts < 5)
     
 # Since we don't know the resource needs of our jobs, yet, we'll start with the below:
 # Requirements = OSGVO_OS_STRING == "RHEL 6" && HAS_MODULES == True                           
