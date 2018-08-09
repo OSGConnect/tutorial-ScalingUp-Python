@@ -1,54 +1,44 @@
-# The UNIVERSE defines an execution environment. You will almost always use VANILLA.
-Universe = vanilla
-
-# These are good base requirements for your jobs on the OSG. It is specific on OS and
-# OS version, core count and memory, and wants to use the software modules. 
-Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True 
-request_cpus = 1
-request_memory = 1 GB
-
-# executable is the program your job will run It's often useful
-# to create a shell script to "wrap" your actual work.
-executable = ../scalingup-python-wrapper.sh 
-
-# files transferred into the job sandbox
+# We can indicate the location of our executable, since it
+#  exists one directory level up. We'll let these first tests 
+#  run our python script without giving it any arguments.
+executable = ../scalingup-python-wrapper.sh
+    
+# Similarly, we can indicate the location of any other files 
+#  that will need to be transfered into the job working directory.
+#  If we don't specify which output files to transfer back,
+#  HTCondor will just transfer back any new *files* from the job's
+#  working directory:
 transfer_input_files = ../rosen_brock_brute_opt.py
-
-# error and output are the error and output channels from your job
-# that HTCondor returns from the remote host.
+ 
+# Additionally, we can indicate that our out/err/log files should 
+#  be created by HTCondor within a subdirectory (or other location)
+#  so that they don't clog up our submission directory:
 output = Log/job.out.$(Cluster).$(Process)
 error = Log/job.error.$(Cluster).$(Process)
-
-# The log file is where HTCondor places information about your
-# job's status, success, and resource consumption.
 log = Log/job.log.$(Cluster).$(Process)
-
-# Send the job to Held state on failure. 
-on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)  
-
-# Periodically retry the jobs every 60 seconds, up to a maximum of 5 retries. 
-# The RANDOM_INTEGER(60, 600, 120) means random integers are generated between 
-# 60 and 600 seconds with a step size of 120 seconds. The failed jobs are 
-# randomly released with a spread of 1-10 minutes.  Releasing multiple jobs at 
-# the same time causes stress for the login node, so the random spread is a 
-# good approach to periodically release the failed jobs. 
-
-PeriodicRelease = ( (CurrentTime - EnteredCurrentStatus) > $RANDOM_INTEGER(60, 600, 120) ) && ((NumJobStarts < 5))
+   
+# We'll use that trick to hold and release (to re-run) any jobs that
+#  happen to fail, in case their execute server was just missing some 
+#  dependencies of our python program: 
+on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
+PeriodicRelease = ( (CurrentTime - EnteredCurrentStatus) > 120 ) && (NumJobStarts < 5)
+    
+# Since we don't know the resource needs of our jobs, yet, we'll start with the below:
+# Requirements = OSGVO_OS_STRING == "RHEL 6" && HAS_MODULES == True                           
+request_cpus = 1
+request_memory = 1 GB
+request_disk = 1 GB
 
 arguments = $(x_low) $(x_high) $(y_low) $(y_high)
 
-# Queue command  
 queue x_low x_high y_low y_high from (
-    -9, 9, -9, 9
-    -8, 8, -8, 8
-    -7, 7, -7, 7
-    -6, 6, -6, 6
-    -5, 5, -5, 5
-    -4, 4, -4, 4
-    -3, 3, -3, 3
-    -2, 2, -2, 2
-    -1, 1, -1, 1
-  )
-
-
-
+-9 9 -9 9 
+-8 8 -8 8 
+-7 7 -7 7 
+-6 6 -6 6 
+-5 5 -5 5 
+-4 4 -4 4 
+-3 3 -3 3 
+-2 2 -2 2 
+-1 1 -1 1 
+)   
