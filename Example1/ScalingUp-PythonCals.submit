@@ -29,4 +29,4 @@ Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MOD
 on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 PeriodicRelease = ( (CurrentTime - EnteredCurrentStatus) > 120 ) && (NumJobStarts < 5)
 
-queue 1
+queue 10
