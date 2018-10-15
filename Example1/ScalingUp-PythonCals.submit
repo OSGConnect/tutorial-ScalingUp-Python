@@ -17,18 +17,16 @@ output = Log/job.out.$(Cluster).$(Process)
 error = Log/job.error.$(Cluster).$(Process)
 log = Log/job.log.$(Cluster).$(Process)
 
+# Since we don't know the resource needs of our jobs, yet, we'll start with the below:
+request_cpus = 1
+request_memory = 1 GB
+request_disk = 1 GB
+Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True
+
 # We'll use that trick to hold and release (to re-run) any jobs that
 #  happen to fail, in case their execute server was just missing some
 #  dependencies of our python program:
 on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 PeriodicRelease = ( (CurrentTime - EnteredCurrentStatus) > 120 ) && (NumJobStarts < 5)
 
-# Since we don't know the resource needs of our jobs, yet, we'll start with the below:
-# Requirements = OSGVO_OS_STRING == "RHEL 6" && HAS_MODULES == True
-request_cpus = 1
-request_memory = 1 GB
-request_disk = 1 GB
-
-# We'll queue 10 test jobs, to start, each of which should have different
-#  randomly generated bounds on the optimization parameter space.
 queue 10
