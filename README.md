@@ -22,8 +22,8 @@ to scale up.
 
 Obtain the example files via the `tutorial` command,
 
-    $ tutorial ScalingUp-python
-    $ cd tutorial-ScalingUp-python
+    $ tutorial ScalingUp-Python
+    $ cd tutorial-ScalingUp-Python
 
 Inside the `tutorial-ScalingUp-python` directory, all the required files are available. This includes the sample python program, job description file and executable files.  
 
