@@ -267,4 +267,4 @@ jobs finished, execute the `post_script.sh  script to sort the results.
 - [x]  Check the HTCondor manual to learn more about the `Queue` command (https://research.cs.wisc.edu/htcondor/manual/latest/2_5Submitting_Job.html).
 
 <h2> Getting Help </h2>
-For assistance or questions, please email the OSG User Support team  at <mailto:user-support@opensciencegrid.org> or visit the [help desk and community forums](http://support.opensciencegrid.org).
+For assistance or questions, please email the OSG User Support team  at <mailto:support@opensciencegrid.org> or visit the [help desk and community forums](http://support.opensciencegrid.org).
