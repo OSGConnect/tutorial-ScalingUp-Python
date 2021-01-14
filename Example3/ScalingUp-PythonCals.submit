@@ -1,6 +1,3 @@
-# We can indicate the location of our executable, since it
-#  exists one directory level up. We'll now use arguments, 
-# which will be set below in the "queue" statement.
 executable = ../scalingup-python-wrapper.sh
 
 transfer_input_files = ../rosen_brock_brute_opt.py
@@ -14,20 +11,4 @@ request_memory = 1 GB
 request_disk = 1 GB
 Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True 
 
-on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
-PeriodicRelease = ( (CurrentTime - EnteredCurrentStatus) > 120 ) && (NumJobStarts < 5)
-
-# Queue command -- this will submit a job for each line 
-# in the list, and pass the four values from each line 
-# as the arguments to the executable.
-queue arguments from (
-    -9 9 -9 9 
-    -8 8 -8 8 
-    -7 7 -7 7 
-    -6 6 -6 6 
-    -5 5 -5 5 
-    -4 4 -4 4 
-    -3 3 -3 3 
-    -2 2 -2 2 
-    -1 1 -1 1 
-  )
+queue arguments from job_values.txt

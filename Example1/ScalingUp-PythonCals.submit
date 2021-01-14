@@ -1,32 +1,14 @@
-# We can indicate the location of our executable, since it
-#  exists one directory level up. We'll let these first tests
-#  run our python script without giving it any arguments.
 executable = ../scalingup-python-wrapper.sh
-
-# Similarly, we can indicate the location of any other files
-#  that will need to be transfered into the job working directory.
-#  If we don't specify which output files to transfer back,
-#  HTCondor will just transfer back any new *files* from the job's
-#  working directory:
+    
 transfer_input_files = ../rosen_brock_brute_opt.py
-
-# Additionally, we can indicate that our out/err/log files should
-#  be created by HTCondor within a subdirectory (or other location)
-#  so that they don't clog up our submission directory:
+ 
 output = Log/job.out.$(Cluster).$(Process)
 error = Log/job.error.$(Cluster).$(Process)
 log = Log/job.log.$(Cluster).$(Process)
-
-# Since we don't know the resource needs of our jobs, yet, we'll start with the below:
+   
 request_cpus = 1
 request_memory = 1 GB
 request_disk = 1 GB
-Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True
-
-# We'll use that trick to hold and release (to re-run) any jobs that
-#  happen to fail, in case their execute server was just missing some
-#  dependencies of our python program:
-on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
-PeriodicRelease = ( (CurrentTime - EnteredCurrentStatus) > 120 ) && (NumJobStarts < 5)
+Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True 
 
 queue 10

@@ -33,19 +33,19 @@ Let us take a look at our objective function that we are trying to optimize.
 
         f = (1 - x)**2 + (y - x**2)**2
 
-This a two dimensional Rosenbrock function. Clearly, the minimum is located at (1,1). Rosenbrock
-function is one of the test function used to test the robustness of an optimization method.
+This a two dimensional Rosenbrock function. Clearly, the minimum is located at (1,1). 
+The Rosenbrock function is one of the test functions used to test the robustness of an optimization method.
 
 ![fig 2](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/RosenBrockFunction.png)
 
 Here, we are going to use the brute force optimization approach to evaluate the two dimensional Rosenbrock function on grids of points. The boundary values for the grid points are randomly assigned inside the python script. However, these default values may be replaced by 
 user supplied values.
 
-To run the calculations with the random boundary values, the script is executed without any argument
+To run the calculations with the random boundary values, the script is executed without any argument:
 
     python rosen_brock_brute_opt.py
     
-To run the calculations with the user supplid values, the script is executed with input arguments
+To run the calculations with the user supplied values, the script is executed with input arguments:
 
     python rosen_brock_brute_opt.py x_low x_high y_low y_high
 
@@ -57,7 +57,7 @@ For example, the boundary of x direction is (-3, 3) and the boundary of y direct
     
 sets the boundary of x direction to (-3, 3) and the boundary of y direction to (-2, 3).
 
-The directory `Example1` runs the python script with the default random values. The directories `Example2`, `Example3` and `Example4` deal with supplying the boundary values as input arguments. 
+The directory `Example1` runs the python script with the default random values. The directories `Example2`, and `Example3` deal with supplying the boundary values as input arguments. 
 
 ## Execution Script
 
@@ -72,60 +72,34 @@ Let us take a look at the execution script, `scalingup-python-wrapper.sh`
 
 The wrapper loads the the relevant modules and then executes the python script `rosen_brock_brute_opt.py`. The python script takes four argument but they are optional. If we don't supply these optional arguments, the values are internally assigned.
 
-## Submitting jobs concurrently
+## Submitting Jobs Concurrently
 
 ![fig 3](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide2.png)
 
-Now let us take a look at job description file 
+Now let us take a look at job description file. 
 
     cd Example1
     cat ScalingUp-PythonCals.submit
 
-If we want to submit several jobs, we need to track log, out and error  files for each job. An easy way to do this is to add the `$(Cluster)` and `$(Process)` variables to the file names. 
+If we want to submit several jobs, we need to track log, out and error  files for each job. An easy way to do this is to add the `$(Cluster)` and `$(Process)` variables to the file names. You can see this below in the names given to the standard output, standard 
+error and HTCondor log files: 
 
-    # The UNIVERSE defines an execution environment. You will almost always use VANILLA.
-    Universe = vanilla
+	executable = ../scalingup-python-wrapper.sh
+	
+	transfer_input_files = ../rosen_brock_brute_opt.py
+ 
+	output = Log/job.out.$(Cluster).$(Process)
+	error = Log/job.error.$(Cluster).$(Process)
+	log = Log/job.log.$(Cluster).$(Process)
+   
+	request_cpus = 1
+	request_memory = 1 GB
+	request_disk = 1 GB
+	Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True 
 
-    # These are good base requirements for your jobs on the OSG. It is specific on OS and
-    # OS version, core, and memory, and wants to use the software modules. 
-    Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True 
-    request_cpus = 1
-    request_memory = 1 GB
+	queue 10
 
-    # executable is the program your job will run It's often useful
-    # to create a shell script to "wrap" your actual work.
-    executable = scalingup-python-wrapper.sh 
-
-    # files transferred into the job sandbox
-    transfer_input_files = rosen_brock_brute_opt.py
-
-    # error and output are the error and output channels from your job
-    # that HTCondor returns from the remote host.
-    output = Log/job.out.$(Cluster).$(Process)
-    error = Log/job.error.$(Cluster).$(Process)
-
-
-    # The log file is where HTCondor places information about your
-    # job's status, success, and resource consumption.
-    log = Log/job.log.$(Cluster).$(Process)
-
-    # Send the job to Held state on failure. 
-    on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)  
-
-    # Periodically retry the jobs every 60 seconds, up to a maximum of 5 retries. 
-    # The RANDOM_INTEGER(60, 600, 120) means random integers are generated between 
-    # 60 and 600 seconds with a step size of 120 seconds. The failed jobs are 
-    # randomly released with a spread of 1-10 minutes.  Releasing multiple jobs at 
-    # the same time causes stress for the login node, so the random spread is a 
-    # good approach to periodically release the failed jobs. 
-
-    PeriodicRelease = ( (CurrentTime - EnteredCurrentStatus) > $RANDOM_INTEGER(60, 600, 120) ) && ((NumJobStarts < 5))
-
-    # Queue is the "start button" - it launches any jobs that have been
-    # specified thus far.
-    queue 10
-
-Note the `Queue 10`.  This tells Condor to queue 10 copies of this job as one cluster.  
+Note the `queue 10`.  This tells Condor to queue 10 copies of this job as one cluster. 
 
 Let us submit the above job
 
@@ -133,82 +107,112 @@ Let us submit the above job
     Submitting job(s)..........
     10 job(s) submitted to cluster 329837.
 
-Apply your `condor_q` and `connect watch` knowledge to see this job progress. After all 
-jobs finished, execute the `post_script.sh  script to sort the results. 
+Apply your `condor_q` knowledge to see this job progress. After all 
+jobs finished, execute the `post_script.sh`  script to sort the results. 
 
     ./post_script.sh
 
-## Other ways to use Queue command
+Note that all ten jobs will have run with random arguments because we did not supply 
+any from the submit file. What if we wanted to supply those arguments so that we could 
+reproduce this analysis if needed? The next example shows how to do this. 
 
-Now we will explore other ways to use Queue command. In the previous example, we did not pass 
+## Providing Different Inputs to Jobs
+
+In the previous example, we did not pass 
 any argument to the program and the program generated random boundary conditions.  If we have some guess about what could be a better boundary condition, it is a good idea to supply the boundary 
 condition as arguments. 
 
-<h3> Supply multiple arguments via  Queue command </h3>
+It is possible to use a single file to supply multiple arguments. We can take the job description file from the previous example, and modify it to include arguments. The modified job description file is available in the `Example2` directory. Take a look at the job description file `ScalingUp-PythonCals.submit`. 
 
-![fig 4](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide3.png)
+    $ cd ../Example2
+    $ cat ScalingUp-PythonCals.submit
 
-It is possible to use a single file to supply multiple arguments. We can take the job description 
-file from the previous example, and modify it slightly to submit several jobs.  The modified job 
-description file is available in `Example2` directory.  Take a look at the job description file `ScalingUp-PythonCals.submit`.  
 
-    $ cd Example2
-    $ cat  ScalingUp-PythonCals.submit
-    
-    ...
-    #Supply arguments 
-    arguments = -9 9 -9 9
+	executable = ../scalingup-python-wrapper.sh
+	arguments = $(x_low) $(x_high) $(y_low) $(y_high)
+	
+	transfer_input_files = ../rosen_brock_brute_opt.py
+ 
+	output = Log/job.out.$(Cluster).$(Process)
+	error = Log/job.error.$(Cluster).$(Process)
+	log = Log/job.log.$(Cluster).$(Process)
+   
+	request_cpus = 1
+	request_memory = 1 GB
+	request_disk = 1 GB
+	Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True 
 
-    # Queue is the "start button" - it launches any jobs that have been
-    # specified thus far.
-    queue 
+	queue x_low x_high y_low y_high from job_values.txt
 
-    arguments = -8 8 -8 8
-    queue 
+A major part of the job description file looks same as the previous example. The main 
+difference is that the addition of  `arguments` keyword, which looks like this: 
 
-    arguments = -8 8 -8 8
-    queue 
-    ...
+	arguments = $(x_low) $(x_high) $(y_low) $(y_high)
 
-Let us submit the above job
+The given arguments `$(x_low)`, `$(x_high)`, etc. are actually variables that represent
+the values we want to use. These values are set in the queue command at the end of the 
+file: 
+
+	queue x_low x_high y_low y_high from job_values.txt
+
+Take a look at job_values.txt: 
+
+	$ cat job_values.txt
+	
+	-9 9 -9 9
+	-8 8 -8 8
+	-7 7 -7 7
+	-6 6 -6 6
+	-5 5 -5 5
+	-4 4 -4 4
+	-3 3 -3 3
+	-2 2 -2 2
+	-1 1 -1 1
+
+The submit file's `queue` statement will read in this file and assign each value in 
+a row to the four variables shown in the `queue` statement. Each row corresponds to the 
+submission of a unique job with those four values. 
+ 
+Let us submit the above job to see this: 
 
     $ condor_submit ScalingUp-PythonCals.submit
     Submitting job(s)..........
-    10 job(s) submitted to cluster 329838.
+    10 job(s) submitted to cluster 329840.
 
-Apply your `condor_q` and `connect watch` knowledge to see this job progress. After all 
-jobs finished, execute the `post_script.sh  script to sort the results. 
+Apply your `condor_q` knowledge to see this job progress. After all 
+jobs finished, execute the `post_script.sh`  script to sort the results. 
 
-    ./post_script.sh
+    ./post_process.sh
 
+## Another Example of Different Inputs
 
-<h3> Variable expansion via Queue command </h3>
+In the previous example, we split the input information into four variables 
+that were included in the `arguments` line. However, we could have set the 
+`arguments` line directly, without intermediate values. This is shown in 
+Example 3: 
 
-![fig 5](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide4.png)
+    $ cd ../Example3
+    $ cat ScalingUp-PythonCals.submit
 
-A major part of the job description file looks same as the previous example. The main 
-difference is that the addition of  `arguments` keyword.  Each time the queue command appears 
-in the script, the expression(s) before the queue would be added to the job description. 
+	executable = ../scalingup-python-wrapper.sh
 
+	transfer_input_files = ../rosen_brock_brute_opt.py
 
-We may get tired of typing the argument and queue expressions again and again in the above 
-job description file. There is a way to implement compact queue expression and  expand the 
-arguments for each job. Take a look at the job description file in Example3. 
+	output = Log/job.out.$(Cluster).$(Process)
+	error = Log/job.error.$(Cluster).$(Process)
+	log = Log/job.log.$(Cluster).$(Process)
 
-    $ cat Example3/ScalingUp-PythonCals.submit
-    ...
-    queue arguments from (
-    -9 9 -9 9 
-    -8 8 -8 8 
-    -7 7 -7 7 
-    -6 6 -6 6 
-    -5 5 -5 5 
-    -4 4 -4 4 
-    -3 3 -3 3 
-    -2 2 -2 2 
-    -1 1 -1 1 
-    )
-    ...
+	request_cpus = 1
+	request_memory = 1 GB
+	request_disk = 1 GB
+	Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True 
+
+	queue arguments from job_values.txt
+
+Here, `arguments` has disappeared from the top of the file because we've included 
+it in the queue statement at the end. The `job_values.txt` file has the same values 
+as before; in this syntax, HTCondor will submit a job for each row of values and the 
+job's arguments will be those four values. 
 
 Let us submit the above job
 
@@ -219,42 +223,4 @@ Let us submit the above job
 Apply your `condor_q` and `connect watch` knowledge to see this job progress. After all 
 jobs finished, execute the `post_script.sh  script to sort the results. 
 
-    ./post_script.sh
-
-
-In fact, we could define variables and assign them to HTCondor's expression. This is
-illustrated in Example4. 
-
-    $ cd Example4
-    $ cat ScalingUp-PythonCals.submit
-
-    ...
-    arguments = $(x_low) $(x_high) $(y_low) $(y_high)
-
-    # Queue command  
-    queue x_low, x_high, y_low, y_high from (
-    -9 9 -9 9 
-    -8 8 -8 8 
-    -7 7 -7 7 
-    -6 6 -6 6 
-    -5 5 -5 5 
-    -4 4 -4 4 
-    -3 3 -3 3 
-    -2 2 -2 2 
-    -1 1 -1 1 
-   )
-
-The  queue command defines the variables x_low, x_high, y_low, and y_hight.  These variables are passed on to the 
-argument command (`arguments = $(x_low) $(x_high) $(y_low) $(y_high)`). 
- 
-Let us submit the above job
-
-    $ condor_submit ScalingUp-PythonCals.submit
-    Submitting job(s)..........
-    10 job(s) submitted to cluster 329840.
-
-Apply your `condor_q` and `connect watch` knowledge to see this job progress. After all 
-jobs finished, execute the `post_script.sh  script to sort the results. 
-
-    ./post_script.sh
-
+    ./post_process.sh
