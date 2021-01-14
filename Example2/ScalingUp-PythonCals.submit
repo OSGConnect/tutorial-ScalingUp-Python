@@ -1,15 +1,17 @@
+# Example 2
+
+log = Log/job.$(Cluster).$(Process).log
+output = Log/job.$(Cluster).$(Process).out
+error = Log/job.$(Cluster).$(Process).err
+
 executable = ../scalingup-python-wrapper.sh
 arguments = $(x_low) $(x_high) $(y_low) $(y_high)
     
 transfer_input_files = ../rosen_brock_brute_opt.py
- 
-output = Log/job.out.$(Cluster).$(Process)
-error = Log/job.error.$(Cluster).$(Process)
-log = Log/job.log.$(Cluster).$(Process)
-   
-request_cpus = 1
-request_memory = 1 GB
-request_disk = 1 GB
-Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True 
 
+requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
+request_cpus = 1
+request_memory = 500 MB
+request_disk = 300MB
+ 
 queue x_low x_high y_low y_high from job_values.txt

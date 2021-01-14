@@ -1,2 +1,2 @@
 #!/bin/bash
-grep "Search Result" Log/job.out.*.* | sort -n -k3 -r
+grep "Search Result" Log/*.out | sort -n -k3 -r

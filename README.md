@@ -15,7 +15,7 @@ throughput computing on the OSG.
 
 ![fig 1](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide1.png)
 
-The  HTCondor's `Queue` command can run multiple jobs from a single job description file. In this tutorial, we will see how to scale up the calculations for a simple python example using the HTCondor’s Queue command.
+The  HTCondor's `queue` command can run multiple jobs from a single job description file. In this tutorial, we will see how to scale up the calculations for a simple python example using the HTCondor’s queue command.
 
 Once we understand the basic HTCondor script to run a single job, it is easy
 to scale up.
@@ -88,14 +88,14 @@ error and HTCondor log files:
 	
 	transfer_input_files = ../rosen_brock_brute_opt.py
  
-	output = Log/job.out.$(Cluster).$(Process)
-	error = Log/job.error.$(Cluster).$(Process)
-	log = Log/job.log.$(Cluster).$(Process)
-   
+	log = Log/job.$(Cluster).$(Process).log
+	output = Log/job.$(Cluster).$(Process).out
+	error = Log/job.$(Cluster).$(Process).err
+	
+	requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
 	request_cpus = 1
-	request_memory = 1 GB
-	request_disk = 1 GB
-	Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True 
+	request_memory = 500 MB
+	request_disk = 300MB
 
 	queue 10
 
@@ -133,14 +133,14 @@ It is possible to use a single file to supply multiple arguments. We can take th
 	
 	transfer_input_files = ../rosen_brock_brute_opt.py
  
-	output = Log/job.out.$(Cluster).$(Process)
-	error = Log/job.error.$(Cluster).$(Process)
-	log = Log/job.log.$(Cluster).$(Process)
-   
+	log = Log/job.$(Cluster).$(Process).log
+	output = Log/job.$(Cluster).$(Process).out
+	error = Log/job.$(Cluster).$(Process).err
+	
+	requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
 	request_cpus = 1
-	request_memory = 1 GB
-	request_disk = 1 GB
-	Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True 
+	request_memory = 500 MB
+	request_disk = 300MB
 
 	queue x_low x_high y_low y_high from job_values.txt
 
@@ -198,15 +198,15 @@ Example 3:
 
 	transfer_input_files = ../rosen_brock_brute_opt.py
 
-	output = Log/job.out.$(Cluster).$(Process)
-	error = Log/job.error.$(Cluster).$(Process)
-	log = Log/job.log.$(Cluster).$(Process)
-
+	log = Log/job.$(Cluster).$(Process).log
+	output = Log/job.$(Cluster).$(Process).out
+	error = Log/job.$(Cluster).$(Process).err
+	
+	requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
 	request_cpus = 1
-	request_memory = 1 GB
-	request_disk = 1 GB
-	Requirements = OSGVO_OS_STRING == "RHEL 6" && TARGET.Arch == "X86_64" && HAS_MODULES == True 
-
+	request_memory = 500 MB
+	request_disk = 300MB
+	
 	queue arguments from job_values.txt
 
 Here, `arguments` has disappeared from the top of the file because we've included 
