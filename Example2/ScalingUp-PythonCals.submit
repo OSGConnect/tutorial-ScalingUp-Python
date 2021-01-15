@@ -11,7 +11,7 @@ transfer_input_files = ../rosen_brock_brute_opt.py
 
 requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
 request_cpus = 1
-request_memory = 500 MB
-request_disk = 300MB
+request_memory = 1 GB
+request_disk = 1 GB
  
 queue x_low x_high y_low y_high from job_values.txt
