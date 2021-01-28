@@ -65,12 +65,11 @@ Let us take a look at the execution script, `scalingup-python-wrapper.sh`
 
     #!/bin/bash
 
-    module load python/3.4
-    module load all-pkgs
+    module load py-scipy/1.1.0-py3.7
 
-    python ./rosen_brock_brute_opt.py  $1 $2 $3 $4
+    python3 ./rosen_brock_brute_opt.py  $1 $2 $3 $4
 
-The wrapper loads the the relevant modules and then executes the python script `rosen_brock_brute_opt.py`. The python script takes four argument but they are optional. If we don't supply these optional arguments, the values are internally assigned.
+The wrapper loads the the relevant module and then executes the python script `rosen_brock_brute_opt.py`. The python script takes four argument but they are optional. If we don't supply these optional arguments, the values are internally assigned.
 
 ## Submitting Jobs Concurrently
 
@@ -94,8 +93,8 @@ error and HTCondor log files:
 	
 	requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
 	request_cpus = 1
-	request_memory = 500 MB
-	request_disk = 300MB
+	request_memory = 1 GB
+	request_disk = 1 GB
 
 	queue 10
 
@@ -139,8 +138,8 @@ It is possible to use a single file to supply multiple arguments. We can take th
 	
 	requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
 	request_cpus = 1
-	request_memory = 500 MB
-	request_disk = 300MB
+	request_memory = 1 GB
+	request_disk = 1 GB
 
 	queue x_low x_high y_low y_high from job_values.txt
 
@@ -177,7 +176,7 @@ Let us submit the above job to see this:
 
     $ condor_submit ScalingUp-PythonCals.submit
     Submitting job(s)..........
-    10 job(s) submitted to cluster 329840.
+    9 job(s) submitted to cluster 329840.
 
 Apply your `condor_q` knowledge to see this job progress. After all 
 jobs finished, execute the `post_script.sh`  script to sort the results. 
@@ -204,8 +203,8 @@ Example 3:
 	
 	requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
 	request_cpus = 1
-	request_memory = 500 MB
-	request_disk = 300MB
+	request_memory = 1 GB
+	request_disk = 1 GB
 	
 	queue arguments from job_values.txt
 
@@ -218,9 +217,9 @@ Let us submit the above job
 
     $ condor_submit ScalingUp-PythonCals.submit
     Submitting job(s)..........
-    10 job(s) submitted to cluster 329839.
+    9 job(s) submitted to cluster 329839.
 
 Apply your `condor_q` and `connect watch` knowledge to see this job progress. After all 
-jobs finished, execute the `post_script.sh  script to sort the results. 
+jobs finished, execute the `post_script.sh`  script to sort the results. 
 
     ./post_process.sh
