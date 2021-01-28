@@ -1,17 +1,17 @@
 # Example 3
 
-requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
-request_cpus = 1
-request_memory = 1 GB
-request_disk = 1 GB
-
-executable = ../scalingup-python-wrapper.sh 
+executable = ../scalingup-python-wrapper.sh
 
 transfer_input_files = ../rosen_brock_brute_opt.py
 
 output = Log/job.$(Cluster).$(Process).out
 error = Log/job.$(Cluster).$(Process).err
 log = Log/job.$(Cluster).$(Process).log
+
+requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
+request_cpus = 1
+request_memory = 1 GB
+request_disk = 1 GB
 
 # Queue command -- this will submit a job for each line 
 # in the list, and pass the four values from each line 
