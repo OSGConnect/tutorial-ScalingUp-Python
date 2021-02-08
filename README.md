@@ -43,6 +43,7 @@ user supplied values.
 
 To run the calculations with the random boundary values, the script is executed without any argument:
 
+    module load py-scipy/1.1.0-py3.7
     python rosen_brock_brute_opt.py
     
 To run the calculations with the user supplied values, the script is executed with input arguments:
