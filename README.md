@@ -1,9 +1,9 @@
-[title]: - "Scaling Up With HTCondor’s Queue Command"
+---
+ospool:
+    path: software_examples/python/tutorial-ScalingUp-Python/README.md
+---
 
-[TOC]
-
-## Overview 
-
+# Scaling Up With HTCondor’s Queue Command
 
 Many large scale computations require the ability to process multiple jobs concurrently. Consider the extensive
 sampling done for a multi-dimensional Monte Carlo integration, parameter sweep for a given model or molecular
