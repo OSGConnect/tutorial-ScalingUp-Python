@@ -91,7 +91,7 @@ This will execute the python script `rosen_brock_brute_opt.py`. The python scrip
 
 ## Submitting Jobs Concurrently
 
-![fig 3](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide2.png)
+![fig 3](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/Slide2-cropped.png)
 
 Now let us take a look at job description file. 
 
