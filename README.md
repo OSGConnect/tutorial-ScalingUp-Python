@@ -102,7 +102,6 @@ If we want to submit several jobs, we need to track log, out and error  files fo
 error and HTCondor log files: 
 
 <pre class="sub"><code>+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
-
 executable = ../rosen_brock_brute_opt.py
 
 log = Log/job.$(Cluster).$(Process).log
