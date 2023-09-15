@@ -20,12 +20,14 @@ The  HTCondor's `queue` command can run multiple jobs from a single job descript
 Once we understand the basic HTCondor script to run a single job, it is easy
 to scale up.
 
-Obtain the example files via the `tutorial` command,
+To download the materials for this tutorial, use the command
 
-    $ tutorial ScalingUp-Python
-    $ cd tutorial-ScalingUp-Python
+    $ git clone https://github.com/OSGConnect/tutorial-ScalingUp-Python
 
 Inside the `tutorial-ScalingUp-python` directory, all the required files are available. This includes the sample python program, job description file and executable files.  
+Move into the directory with
+
+    $ cd tutorial-ScalingUp-Python
 
 ## Python script and the optimization function
 
@@ -36,7 +38,14 @@ Let us take a look at our objective function that we are trying to optimize.
 This a two dimensional Rosenbrock function. Clearly, the minimum is located at (1,1). 
 The Rosenbrock function is one of the test functions used to test the robustness of an optimization method.
 
+<!-- 
+The figure previously used shows a minimum at (0,0), is symmetric, and has f(0,3) ~ 900, suggesting that equation used was actually
+		f = x**2 + 100(y - x**2)**2
 ![fig 2](https://raw.githubusercontent.com/OSGConnect/tutorial-ScalingUp-Python/master/Images/RosenBrockFunction.png)
+
+The actual figure should look something like this:
+https://www.wolframalpha.com/input?i=plot+f%28x%2Cy%29+%3D+%281-x%29**2+%2B+%28y-x**2%29**2+for+x+from+-2+to+2+and+for+y+from+-1+to+3
+-->
 
 Here, we are going to use the brute force optimization approach to evaluate the two dimensional Rosenbrock function on grids of points. The boundary values for the grid points are randomly assigned inside the python script. However, these default values may be replaced by 
 user supplied values.
