@@ -3,15 +3,9 @@
 # We can indicate the location of our executable, since it
 #  exists one directory level up. We'll let these first tests
 #  run our python script without giving it any arguments.
+#  The executable will be automatically transferred at the start
+#  of the job.
 executable = ../rosen_brock_brute_opt.py
-
-# Similarly, we can indicate the location of any other files
-#  that will need to be transfered into the job working directory.
-#  If we don't specify which output files to transfer back,
-#  HTCondor will just transfer back any new *files* from the job's
-#  working directory:
-#
-# transfer_input_files = 
 
 # Additionally, we can indicate that our out/err/log files should
 #  be created by HTCondor within a subdirectory (or other location)
