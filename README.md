@@ -47,41 +47,47 @@ The actual figure should look something like this:
 https://www.wolframalpha.com/input?i=plot+f%28x%2Cy%29+%3D+%281-x%29**2+%2B+%28y-x**2%29**2+for+x+from+-2+to+2+and+for+y+from+-1+to+3
 -->
 
-Here, we are going to use the brute force optimization approach to evaluate the two dimensional Rosenbrock function on grids of points. The boundary values for the grid points are randomly assigned inside the python script. However, these default values may be replaced by 
+Here, we are going to use the brute force optimization approach to evaluate the two dimensional Rosenbrock function on grids of points. 
+The boundary values for the grid points are randomly assigned inside the python script. However, these default values may be replaced by 
 user supplied values.
 
 To run the calculations with the random boundary values, the script is executed without any argument:
 
-    module load py-scipy/1.1.0-py3.7
-    python rosen_brock_brute_opt.py
+    python3 rosen_brock_brute_opt.py
     
 To run the calculations with the user supplied values, the script is executed with input arguments:
 
-    python rosen_brock_brute_opt.py x_low x_high y_low y_high
+    python3 rosen_brock_brute_opt.py x_low x_high y_low y_high
 
 where x_low and x_high are low and high values along x direction, and y_low and y_high are the low and high values along the y direction.
 
 For example, the boundary of x direction is (-3, 3) and the boundary of y direction is (-2, 3).
 
-    python rosen_brock_brute_opt.py  -3 3 -2 2
+    python3 rosen_brock_brute_opt.py  -3 3 -2 2
     
 sets the boundary of x direction to (-3, 3) and the boundary of y direction to (-2, 3).
 
 The directory `Example1` runs the python script with the default random values. The directories `Example2`, and `Example3` deal with supplying the boundary values as input arguments. 
 
+The python script requires the SciPy package, which is typically not included in standard installations of Python 3. 
+Therefore, we will use a container that has Python 3 and SciPy installed. 
+If you'd like to test the script, you can do so with
+
+	apptainer shell /cvmfs/singularity.opensciencegrid.org/htc/rocky:8
+
+ and then run one of the above commands.
+
+<!-- 
 ## Execution Script
 
 Let us take a look at the execution script, `scalingup-python-wrapper.sh`
 
     #!/bin/bash
 
-    module load py-scipy/1.1.0-py3.7
-    # set TMPDIR variable
-    export TMPDIR=$_CONDOR_SCRATCH_DIR
-
     python3 ./rosen_brock_brute_opt.py  $1 $2 $3 $4
 
-The wrapper loads the the relevant module and then executes the python script `rosen_brock_brute_opt.py`. The python script takes four argument but they are optional. If we don't supply these optional arguments, the values are internally assigned.
+This will execute the python script `rosen_brock_brute_opt.py`. The python script takes four argument but they are optional. If we don't supply these optional arguments, the values are internally assigned.
+-->
 
 ## Submitting Jobs Concurrently
 
@@ -95,15 +101,14 @@ Now let us take a look at job description file.
 If we want to submit several jobs, we need to track log, out and error  files for each job. An easy way to do this is to add the `$(Cluster)` and `$(Process)` variables to the file names. You can see this below in the names given to the standard output, standard 
 error and HTCondor log files: 
 
-	executable = ../scalingup-python-wrapper.sh
-	
-	transfer_input_files = ../rosen_brock_brute_opt.py
+	executable = ../rosen_brock_brute_opt.py
  
 	log = Log/job.$(Cluster).$(Process).log
 	output = Log/job.$(Cluster).$(Process).out
 	error = Log/job.$(Cluster).$(Process).err
 	
-	requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
+	+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
+  
 	request_cpus = 1
 	request_memory = 1 GB
 	request_disk = 1 GB
@@ -138,17 +143,15 @@ It is possible to use a single file to supply multiple arguments. We can take th
     $ cd ../Example2
     $ cat ScalingUp-PythonCals.submit
 
-
-	executable = ../scalingup-python-wrapper.sh
+	executable = ../rosen_brock_brute_opt.py
 	arguments = $(x_low) $(x_high) $(y_low) $(y_high)
 	
-	transfer_input_files = ../rosen_brock_brute_opt.py
- 
 	log = Log/job.$(Cluster).$(Process).log
 	output = Log/job.$(Cluster).$(Process).out
 	error = Log/job.$(Cluster).$(Process).err
 	
-	requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
+	+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
+ 
 	request_cpus = 1
 	request_memory = 1 GB
 	request_disk = 1 GB
@@ -205,15 +208,14 @@ Example 3:
     $ cd ../Example3
     $ cat ScalingUp-PythonCals.submit
 
-	executable = ../scalingup-python-wrapper.sh
-
-	transfer_input_files = ../rosen_brock_brute_opt.py
+	executable = ../rosen_brock_brute_opt.py
 
 	log = Log/job.$(Cluster).$(Process).log
 	output = Log/job.$(Cluster).$(Process).out
 	error = Log/job.$(Cluster).$(Process).err
 	
-	requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
+	+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
+ 
 	request_cpus = 1
 	request_memory = 1 GB
 	request_disk = 1 GB
