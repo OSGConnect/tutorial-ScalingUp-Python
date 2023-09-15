@@ -1,16 +1,15 @@
 # Example 1
 
+# To make sure that we have Python 3 and SciPy, we'll run the job
+# inside of the following container:
++SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
+
 # We can indicate the location of our executable, since it
 #  exists one directory level up. We'll let these first tests
 #  run our python script without giving it any arguments.
-executable = ../scalingup-python-wrapper.sh
-
-# Similarly, we can indicate the location of any other files
-#  that will need to be transfered into the job working directory.
-#  If we don't specify which output files to transfer back,
-#  HTCondor will just transfer back any new *files* from the job's
-#  working directory:
-transfer_input_files = ../rosen_brock_brute_opt.py
+#  The executable will be automatically transferred at the start
+#  of the job.
+executable = ../rosen_brock_brute_opt.py
 
 # Additionally, we can indicate that our out/err/log files should
 #  be created by HTCondor within a subdirectory (or other location)
@@ -19,8 +18,9 @@ log = Log/job.$(Cluster).$(Process).log
 output = Log/job.$(Cluster).$(Process).out
 error = Log/job.$(Cluster).$(Process).err
 
++JobDurationCategory = "Medium"
+
 # Since we don't know the resource needs of our jobs, yet, we'll start with the below:
-requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
 request_cpus = 1
 request_memory = 1 GB
 request_disk = 1 GB
