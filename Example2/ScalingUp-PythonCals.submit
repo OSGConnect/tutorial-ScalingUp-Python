@@ -1,5 +1,6 @@
 # Example 2
 
++SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
 executable = ../rosen_brock_brute_opt.py
 arguments = $(x_low) $(x_high) $(y_low) $(y_high)
 
@@ -7,7 +8,7 @@ log = Log/job.$(Cluster).$(Process).log
 output = Log/job.$(Cluster).$(Process).out
 error = Log/job.$(Cluster).$(Process).err
 
-+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
++JobDurationCategory = "Medium"
 
 request_cpus = 1
 request_memory = 1 GB
