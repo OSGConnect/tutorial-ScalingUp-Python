@@ -1,15 +1,14 @@
 # Example 2
 
-executable = ../scalingup-python-wrapper.sh
+executable = ../rosen_brock_brute_opt.py
 arguments = $(x_low) $(x_high) $(y_low) $(y_high)
-
-transfer_input_files = ../rosen_brock_brute_opt.py
 
 log = Log/job.$(Cluster).$(Process).log
 output = Log/job.$(Cluster).$(Process).out
 error = Log/job.$(Cluster).$(Process).err
 
-requirements = OSGVO_OS_STRING =?= "RHEL 7" && HAS_MODULES =?= True 
++SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
+
 request_cpus = 1
 request_memory = 1 GB
 request_disk = 1 GB
