@@ -101,13 +101,15 @@ cat ScalingUp-PythonCals.submit</code></pre>
 If we want to submit several jobs, we need to track log, out and error  files for each job. An easy way to do this is to add the `$(Cluster)` and `$(Process)` variables to the file names. You can see this below in the names given to the standard output, standard 
 error and HTCondor log files: 
 
-<pre class="sub"><code>executable = ../rosen_brock_brute_opt.py
+<pre class="sub"><code>+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
+
+executable = ../rosen_brock_brute_opt.py
 
 log = Log/job.$(Cluster).$(Process).log
 output = Log/job.$(Cluster).$(Process).out
 error = Log/job.$(Cluster).$(Process).err
 
-+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
++JobDurationCategory = "Medium"
 
 request_cpus = 1
 request_memory = 1 GB
@@ -143,14 +145,15 @@ It is possible to use a single file to supply multiple arguments. We can take th
 <pre class="term"><code>$ cd ../Example2
 $ cat ScalingUp-PythonCals.submit</code></pre>
 
-<pre class="sub"><code>executable = ../rosen_brock_brute_opt.py
+<pre class="sub"><code>+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
+executable = ../rosen_brock_brute_opt.py
 arguments = $(x_low) $(x_high) $(y_low) $(y_high)
 
 log = Log/job.$(Cluster).$(Process).log
 output = Log/job.$(Cluster).$(Process).out
 error = Log/job.$(Cluster).$(Process).err
 
-+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
++JobDurationCategory = "Medium"
 
 request_cpus = 1
 request_memory = 1 GB
@@ -208,13 +211,14 @@ Example 3:
 <pre class="term"><code>$ cd ../Example3
 $ cat ScalingUp-PythonCals.submit</code></pre>
 
-<pre class="sub"><code>executable = ../rosen_brock_brute_opt.py
+<pre class="sub"><code>+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
+executable = ../rosen_brock_brute_opt.py
 
 log = Log/job.$(Cluster).$(Process).log
 output = Log/job.$(Cluster).$(Process).out
 error = Log/job.$(Cluster).$(Process).err
 
-+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
++JobDurationCategory = "Medium"
 
 request_cpus = 1
 request_memory = 1 GB
