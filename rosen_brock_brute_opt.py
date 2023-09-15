@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 # Computes the minimum of Rosenbrock function (also known as banana function). Popular function to test robustness of an optimization method. 
 # Before running the code, do module load python/3.4 and module load all-pkgs
 # Program is executed with four optional arguments. program.py low_x1 high_x1 low_x2 high_x2
@@ -10,7 +12,7 @@ from random import uniform
 def rosenbrock(coordinates):   # The rosenbrock function
     x = coordinates[0]
     y = coordinates[1] 
-    f = (1 - x)**2 + 100.0*(y - x**2)**2
+    f = (1 - x)**2 + (y - x**2)**2
     return f
 
 if __name__ == "__main__":
@@ -37,4 +39,3 @@ if __name__ == "__main__":
     coordinate_of_min = result_from_brute[0]
     #print ('Initial Coordinates= ',brute_range)
     print ('Search Result= ',function_min, coordinate_of_min)
-
