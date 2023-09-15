@@ -1,5 +1,9 @@
 # Example 1
 
+# To make sure that we have Python 3 and SciPy, we'll run the job
+# inside of the following container:
++SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
+
 # We can indicate the location of our executable, since it
 #  exists one directory level up. We'll let these first tests
 #  run our python script without giving it any arguments.
@@ -14,9 +18,7 @@ log = Log/job.$(Cluster).$(Process).log
 output = Log/job.$(Cluster).$(Process).out
 error = Log/job.$(Cluster).$(Process).err
 
-# To make sure that we have Python 3 and SciPy, we'll run the executable
-# inside of the following container:
-+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
++JobDurationCategory = "Medium"
 
 # Since we don't know the resource needs of our jobs, yet, we'll start with the below:
 request_cpus = 1
