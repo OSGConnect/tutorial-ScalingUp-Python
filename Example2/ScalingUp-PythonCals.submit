@@ -1,6 +1,6 @@
 # Example 2
 
-+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
+container_image = /cvmfs/singularity.opensciencegrid.org/htc/rocky:8
 executable = ../rosen_brock_brute_opt.py
 arguments = $(x_low) $(x_high) $(y_low) $(y_high)
 

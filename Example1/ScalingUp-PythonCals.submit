@@ -2,7 +2,7 @@
 
 # To make sure that we have Python 3 and SciPy, we'll run the job
 # inside of the following container:
-+SingularityImage = "/cvmfs/singularity.opensciencegrid.org/htc/rocky:8"
+container_image = /cvmfs/singularity.opensciencegrid.org/htc/rocky:8
 
 # We can indicate the location of our executable, since it
 #  exists one directory level up. We'll let these first tests
